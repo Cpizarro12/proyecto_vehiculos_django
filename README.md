@@ -51,6 +51,64 @@ class Vehiculo(models.Model):
 py manage.py makemigrations
 py manage.py migrate
 ```
+## Crear las vistas y urls en la app vehiculo
+- proyecto_vehiculos_django\vehiculo\views.py
+- proyecto_vehiculos_django\vehiculo\forms.py
+- proyecto_vehiculos_django\vehiculo\urls.py
+- proyecto_vehiculos_django\vehiculo\templates\vehiculo_form.html
+
+
 ## Endpoints
 http://127.0.0.1:8000/ --> Index
 http://127.0.0.1:8000/vehiculo/add/ -->vehiculo_form
+
+
+
+## Agregar los siguientes Vehículos:
+| Marca     | Modelo           | Serial carroceria | Serial motor | Categoria  | Precio |
+|-----------|------------------|-------------------|--------------|------------|--------|
+| Fiat      | Punto            | 254AADD           | 4521475      | Particular | 9200   |
+| Fiat      | Furgoneta Ducato | 25ED235           | 8554122      | Transporte | 19000  |
+| Ford      | F-150 Lightning  | QS41252           | 2547896      | Carga      | 22000  |
+| Toyota    | 4Runner          | 34RF123           | 4587563      | Carga      | 25000  |
+| Chevrolet | Corvette         | 4TQWE5            | 2512545      | Particular | 60000  |
+
+## Se agrega menú con Bootstrap 
+
+- se incluye en settings.py dentro de las aplicaciones bootstrap, posteriormente nos dirigimos a la documentación oficial para obtener el codigo del navbar.
+- Se crea el archivo navbar.html 
+
+## Permisos:
+- para visualizar catalogo y añadir vehiculos: 
+~~~    
+ class Meta:
+        permissions = [
+            ("visualizar_catalogo", "Puede visualizar Catálogo de Vehículos"),
+            ("Can_add_vehiculo_model", "Puede agregar un vehiculo")
+        ]
+~~~
+
+## Registro usuarios nuevos:
+
+- Se crea una nueva app llamada usuarios
+- proyecto_vehiculos_django/usuarios/views.py:
+```
+class RegisterView(View):
+    template_name = 'register.html'
+
+    def get(self, request):
+        form = UserCreationForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            visualizar_permiso = Permission.objects.get(codename='visualizar_catalogo')
+            user.user_permissions.add(visualizar_permiso)
+            messages.success(request, '¡Registro exitoso!')
+            return redirect('index')
+        return render(request, self.template_name, {'form': form})
+```
+- Cada vez que se registra un usuario adquiere el permiso visualizar catalogo.
+
