@@ -18,8 +18,11 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import include
 from vehiculo.views import index
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',index,name='index'),
     path('vehiculo/', include('vehiculo.urls')),
+    path('accounts/', include ("django.contrib.auth.urls")), 
+    path('usuarios/', include('usuarios.urls')),
 ]
